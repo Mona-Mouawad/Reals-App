@@ -11,32 +11,35 @@ class NewTransaction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: AppSize.s5,
-      child: Padding(
-        padding: EdgeInsets.all(AppPadding.p10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            TextFormField(
-              keyboardType: TextInputType.text,
-              controller: titleController,
-              decoration: InputDecoration(labelText: 'Title'),
-            ),
-            TextFormField(
-              keyboardType: TextInputType.number,
-              controller: amountController,
-              decoration: InputDecoration(labelText: 'Amount'),
-            ),
-            TextButton(
-              onPressed: () {
-                addTx(
-                    titleController.text, double.parse(amountController.text));
-              },
-              child: Text('Add Transaction',style: TextStyle(color: ColorManager.purple),),
+    return SizedBox(
+      height: AppSize.s200,
+      child: Card(
+        elevation: AppSize.s5,
+        child: Padding(
+          padding: EdgeInsets.all(AppPadding.p10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              TextFormField(
+                keyboardType: TextInputType.text,
+                controller: titleController,
+                decoration: InputDecoration(labelText: 'Title'),
+              ),
+              TextFormField(
+                keyboardType: TextInputType.number,
+                controller: amountController,
+                decoration: InputDecoration(labelText: 'Amount'),
+              ),
+              TextButton(
+                onPressed: () {
+                  addTx(
+                      titleController.text, double.parse(amountController.text));
+                },
+                child: Text('Add Transaction',style: TextStyle(color: ColorManager.purple),),
 
-            )
-          ],
+              )
+            ],
+          ),
         ),
       ),
     );
