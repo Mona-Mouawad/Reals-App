@@ -8,6 +8,10 @@ import 'package:flutter/material.dart';
 ThemeData getTheme() {
   return ThemeData(
     fontFamily: FontFamilys.fontFamily,
+    primarySwatch: Colors.purple,
+    accentColor: Colors.amber,
+
+
     // main colors
     primaryColor: ColorManager.primary,
     primaryColorLight: ColorManager.lightPrimary,
@@ -15,23 +19,29 @@ ThemeData getTheme() {
     disabledColor: ColorManager.grey1,
     splashColor: ColorManager.lightPrimary,
     //  تموج  ripple effect color
+
+    // text theme
+    textTheme: ThemeData.light().textTheme.copyWith(
+      titleMedium: TextStyle(
+        fontFamily: 'OpenSans',
+        fontWeight: FontWeight.bold,
+        fontSize: 18,
+      ),
+    ),
+    // app bar theme
+    appBarTheme: AppBarTheme(
+        elevation: AppSize.s4,
+        centerTitle: true,
+        titleTextStyle: TextStyle(
+          fontFamily: 'OpenSans',
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+        )),
 // cardview theme
     cardTheme: CardTheme(
       color: ColorManager.white,
       shadowColor: ColorManager.grey,
       elevation: AppSize.s4,
-    ),
-
-    // app bar theme
-    appBarTheme: AppBarTheme(
-      elevation: AppSize.s4,
-      shadowColor: ColorManager.lightPrimary,
-      color: ColorManager.primary,
-      centerTitle: true,
-      titleTextStyle:
-          getRegularTextStyle(color: ColorManager.white, fontSize: 16),
-      systemOverlayStyle:
-          SystemUiOverlayStyle(statusBarBrightness: Brightness.dark),
     ),
 
     // button theme
@@ -52,25 +62,24 @@ ThemeData getTheme() {
       ),
     ),
 
-    // text theme
-    textTheme: TextTheme(
-        displayLarge: getSemiBoldTextStyle(
-            color: ColorManager.darkGrey, fontSize: FontSize.s16),
-        headlineLarge: getSemiBoldTextStyle(
-            color: ColorManager.darkGrey, fontSize: FontSize.s16),
-        titleMedium: getMediumTextStyle(
-            color: ColorManager.primary, fontSize: FontSize.s16),
-        titleSmall: getRegularTextStyle(
-            color: ColorManager.white, fontSize: FontSize.s16),
-        headlineMedium: getRegularTextStyle(
-            color: ColorManager.darkGrey, fontSize: FontSize.s14),
-        bodyLarge: getRegularTextStyle(color: ColorManager.grey1),
-        bodySmall: getRegularTextStyle(color: ColorManager.grey),
-        labelSmall: getBoldTextStyle(
-            color: ColorManager.primary, fontSize: FontSize.s12),
-      labelMedium: getRegularTextStyle(color: ColorManager.grey2, fontSize: FontSize.s12),
-    ),
-
+    // // text theme
+    // textTheme: TextTheme(
+    //     displayLarge: getSemiBoldTextStyle(
+    //         color: ColorManager.darkGrey, fontSize: FontSize.s16),
+    //     headlineLarge: getSemiBoldTextStyle(
+    //         color: ColorManager.darkGrey, fontSize: FontSize.s16),
+    //     titleMedium: getMediumTextStyle(
+    //         color: ColorManager.primary, fontSize: FontSize.s16),
+    //     titleSmall: getRegularTextStyle(
+    //         color: ColorManager.white, fontSize: FontSize.s16),
+    //     headlineMedium: getRegularTextStyle(
+    //         color: ColorManager.darkGrey, fontSize: FontSize.s14),
+    //     bodyLarge: getRegularTextStyle(color: ColorManager.grey1),
+    //     bodySmall: getRegularTextStyle(color: ColorManager.grey),
+    //     labelSmall: getBoldTextStyle(
+    //         color: ColorManager.primary, fontSize: FontSize.s12),
+    //   labelMedium: getRegularTextStyle(color: ColorManager.grey2, fontSize: FontSize.s12),
+    // ),
 
 // input decoration theme (text form field)
     inputDecorationTheme: InputDecorationTheme(

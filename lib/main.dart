@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:real_app/resources/color_manager.dart';
+import 'package:real_app/resources/constants_manager.dart';
 import 'package:real_app/resources/strings_manager.dart';
+import 'package:real_app/resources/theme_manager.dart';
 import 'package:real_app/resources/values_manager.dart';
 import 'package:real_app/models/transaction.dart';
+import 'package:real_app/widgets/chart.dart';
 import 'package:real_app/widgets/newTransaction.dart';
 import 'package:real_app/widgets/transaction_list.dart';
 import 'package:real_app/widgets/userTransactions.dart';
@@ -17,10 +20,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(title: 'Flutter App',theme: ThemeData(
-      primarySwatch: Colors.purple,
-      accentColor: Colors.amber,
-    ), home: MyHomePage());
+    return MaterialApp(title: 'Flutter App',theme: getTheme(), debugShowCheckedModeBanner: false,home: MyHomePage());
   }
 }
 
@@ -43,6 +43,13 @@ class _MyHomePageState extends State<MyHomePage> {
     ),
   ];
 
+  List<Transaction> get _recentTransactions {
+    return _userTransactions.where((element) {
+      return element.date.isAfter(DateTime.now().subtract(Duration(days: 7),),
+      );
+    }).toList();
+  }
+
   void addNewTransaction(String txTitle, double txAmount) {
     final newTX = Transaction(
         id: DateTime.now().toString(),
@@ -58,7 +65,10 @@ class _MyHomePageState extends State<MyHomePage> {
     showModalBottomSheet(context: context, builder: (_)
     {
       return GestureDetector(
-        onTap: (){},
+
+        onTap: (){
+          NewTransactionState().submitData();
+        },
         child: NewTransaction(addNewTransaction),
         behavior: HitTestBehavior.opaque,
       );
@@ -68,6 +78,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomSheet: bottomSheet,
       appBar: AppBar(
         title: Text(AppStrings.Flutter_App),
         actions: <Widget>[
@@ -82,14 +93,7 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Container(
-              width: double.infinity,
-              child: Card(
-                color: ColorManager.blue,
-                child: Text(AppStrings.CHART),
-                elevation: AppSize.s5,
-              ),
-            ),
+            Chart(_recentTransactions),
             TransactionList(_userTransactions),
           ],
         ),

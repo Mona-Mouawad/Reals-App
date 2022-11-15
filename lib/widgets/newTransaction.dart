@@ -9,10 +9,10 @@ class NewTransaction extends StatefulWidget {
   NewTransaction(this.addTx);
 
   @override
-  State<NewTransaction> createState() => _NewTransactionState();
+  State<NewTransaction> createState() => NewTransactionState();
 }
 
-class _NewTransactionState extends State<NewTransaction> {
+class NewTransactionState extends State<NewTransaction> {
 
   final TextEditingController titleController = TextEditingController();
   final TextEditingController amountController = TextEditingController();
@@ -45,6 +45,7 @@ class _NewTransactionState extends State<NewTransaction> {
               decoration: InputDecoration(labelText: 'Title'),
               onFieldSubmitted: (_)=>submitData(),
             ),
+            SizedBox(height: AppSize.s10,),
             TextFormField(
               keyboardType: TextInputType.number,
               controller: amountController,
