@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:real_app/resources/color_manager.dart';
 import 'package:real_app/resources/values_manager.dart';
-
 
 class NewTransaction extends StatefulWidget {
   final Function addTx;
@@ -13,21 +13,34 @@ class NewTransaction extends StatefulWidget {
 }
 
 class NewTransactionState extends State<NewTransaction> {
-
   final TextEditingController titleController = TextEditingController();
   final TextEditingController amountController = TextEditingController();
-
+  DateTime? _selectedDate;
 
   void submitData() {
     final enteredTitle = titleController.text;
     final enteredAmount = double.parse(amountController.text);
-    if (enteredTitle.isEmpty || enteredAmount <= 0) {
+    if (enteredTitle.isEmpty || enteredAmount <= 0 || _selectedDate == null) {
       return;
     }
 
-    widget.addTx(enteredTitle,enteredAmount);
+    widget.addTx(enteredTitle, enteredAmount, _selectedDate);
 
     Navigator.of(context).pop();
+  }
+
+  void _presentDatePicer() {
+    showDatePicker(
+            context: context,
+            initialDate: DateTime.now(),
+            firstDate: DateTime(2021),
+            lastDate: DateTime.now())
+        .then((value) {
+      if (value == null) return;
+      setState(() {
+        _selectedDate = value;
+      });
+    });
   }
 
   @override
@@ -43,20 +56,43 @@ class NewTransactionState extends State<NewTransaction> {
               keyboardType: TextInputType.text,
               controller: titleController,
               decoration: InputDecoration(labelText: 'Title'),
-              onFieldSubmitted: (_)=>submitData(),
+              onFieldSubmitted: (_) => submitData(),
             ),
-            SizedBox(height: AppSize.s10,),
+            SizedBox(
+              height: AppSize.s10,
+            ),
             TextFormField(
               keyboardType: TextInputType.number,
               controller: amountController,
               decoration: InputDecoration(labelText: 'Amount'),
-              onFieldSubmitted: (_)=>submitData(),
+              onFieldSubmitted: (_) => submitData(),
             ),
-            TextButton(
-              onPressed:submitData,
+            SizedBox(
+              height: AppSize.s10,
+            ),
+            Container(
+              height: AppSize.s60,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(_selectedDate == null
+                      ? 'No Date Chosen!'
+                      : 'Picked Date ${DateFormat.yMd().format(_selectedDate!)}'),
+                  TextButton(
+                    onPressed: _presentDatePicer,
+                    child: Text(
+                      'Choose Date',
+                      style: TextStyle(color: ColorManager.primary),
+                    ),
+                  )
+                ],
+              ),
+            ),
+            ElevatedButton(
+              onPressed: submitData,
               child: Text(
                 'Add Transaction',
-                style: TextStyle(color: ColorManager.purple),
+              //  style: TextStyle(color: ColorManager.purple),
               ),
             )
           ],
