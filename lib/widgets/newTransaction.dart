@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:real_app/resources/color_manager.dart';
+import 'package:real_app/resources/strings_manager.dart';
 import 'package:real_app/resources/values_manager.dart';
 
 class NewTransaction extends StatefulWidget {
@@ -45,57 +46,64 @@ class NewTransactionState extends State<NewTransaction> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: AppSize.s5,
-      child: Padding(
-        padding: EdgeInsets.all(AppPadding.p10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            TextFormField(
-              keyboardType: TextInputType.text,
-              controller: titleController,
-              decoration: InputDecoration(labelText: 'Title'),
-              onFieldSubmitted: (_) => submitData(),
-            ),
-            SizedBox(
-              height: AppSize.s10,
-            ),
-            TextFormField(
-              keyboardType: TextInputType.number,
-              controller: amountController,
-              decoration: InputDecoration(labelText: 'Amount'),
-              onFieldSubmitted: (_) => submitData(),
-            ),
-            SizedBox(
-              height: AppSize.s10,
-            ),
-            Container(
-              height: AppSize.s60,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(_selectedDate == null
-                      ? 'No Date Chosen!'
-                      : 'Picked Date ${DateFormat.yMd().format(_selectedDate!)}'),
-                  TextButton(
-                    onPressed: _presentDatePicer,
-                    child: Text(
-                      'Choose Date',
-                      style: TextStyle(color: ColorManager.primary),
-                    ),
-                  )
-                ],
+    final mediaQuery = MediaQuery.of(context);
+    return SingleChildScrollView(
+      child: Card(
+        elevation: AppSize.s5,
+        child: Padding(
+          padding: EdgeInsets.only(
+              right: AppPadding.p10,
+              left: AppPadding.p10,
+              top: AppPadding.p10,
+              bottom: mediaQuery.viewInsets.bottom + 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              TextFormField(
+                keyboardType: TextInputType.text,
+                controller: titleController,
+                decoration: InputDecoration(labelText: AppStrings.Title),
+                onFieldSubmitted: (_) => submitData(),
               ),
-            ),
-            ElevatedButton(
-              onPressed: submitData,
-              child: Text(
-                'Add Transaction',
-              //  style: TextStyle(color: ColorManager.purple),
+              SizedBox(
+                height: AppSize.s10,
               ),
-            )
-          ],
+              TextFormField(
+                keyboardType: TextInputType.number,
+                controller: amountController,
+                decoration: InputDecoration(labelText: AppStrings.Amount),
+                onFieldSubmitted: (_) => submitData(),
+              ),
+              SizedBox(
+                height: AppSize.s10,
+              ),
+              Container(
+                height: AppSize.s60,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(_selectedDate == null
+                        ? AppStrings.No_Date_Chosen
+                        : AppStrings.Picked_Date +
+                            DateFormat.yMd().format(_selectedDate!)),
+                    TextButton(
+                      onPressed: _presentDatePicer,
+                      child: Text(
+                        AppStrings.Choose_Date,
+                        style: TextStyle(color: ColorManager.primary),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              ElevatedButton(
+                onPressed: submitData,
+                child: Text(
+                  AppStrings.Add_Transaction,
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
