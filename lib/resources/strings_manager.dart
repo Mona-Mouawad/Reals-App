@@ -1,6 +1,7 @@
 class AppStrings {
   static const CHART = "CHART!";
   static const Flutter_App = "Flutter App";
+  static const Personal_Expenses = "Personal Expenses";
   static const No_Date_Chosen = "'No Date Chosen!'";
   static const Picked_Date = "Picked Date";
   static const Choose_Date = "Choose Date";

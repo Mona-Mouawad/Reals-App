@@ -1,0 +1,26 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
+class AdaptiveTextButton extends StatelessWidget {
+  final String text;
+  final VoidCallback handler;
+
+  AdaptiveTextButton(this.text, this.handler);
+
+  @override
+  Widget build(BuildContext context) {
+    return Platform.isIOS ? CupertinoButton(
+        child: _buttonText(text), onPressed: handler) :
+    TextButton(onPressed: handler, child: _buttonText(text));
+  }
+
+  Widget _buttonText(text) =>
+      Text(
+        text,
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+        ),
+      );
+}

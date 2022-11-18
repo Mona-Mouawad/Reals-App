@@ -1,44 +1,53 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:real_app/resources/constants_manager.dart';
 import 'package:real_app/resources/strings_manager.dart';
 import 'package:real_app/resources/theme_manager.dart';
-import 'package:real_app/models/transaction.dart';
-import 'package:real_app/widgets/chart.dart';
 import 'package:real_app/widgets/newTransaction.dart';
-import 'package:real_app/widgets/transaction_list.dart';
+import './widgets/transaction_list.dart';
+import './widgets/chart.dart';
+import './models/transaction.dart';
 
 void main() {
+  // SystemChrome.setPreferredOrientations([
+  //   DeviceOrientation.portraitUp,
+  //   DeviceOrientation.portraitUp,
+  // ]);
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Flutter App',
-        theme: getTheme(),
-        debugShowCheckedModeBanner: false,
-        home: MyHomePage());
+      debugShowCheckedModeBanner: false,
+      title: AppStrings.Personal_Expenses,
+      theme: getTheme(),
+      home: MyHomePage(),
+    );
   }
 }
 
 class MyHomePage extends StatefulWidget {
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
   final List<Transaction> _userTransactions = [
     // Transaction(
-    //     id: 't1', title: 'New Shoes', amount: 69.99, date: DateTime.now()),
+    //   id: 't2',
+    //   title: 'Weekly Groceries',
+    //   amount: 16.53,
+    //   date: DateTime.now(),
+    // ),
   ];
+  bool _showChart = false;
 
   List<Transaction> get _recentTransactions {
-    return _userTransactions.where((element) {
-      return element.date.isAfter(
+    return _userTransactions.where((tx) {
+      return tx.date.isAfter(
         DateTime.now().subtract(
           Duration(days: 7),
         ),
@@ -46,29 +55,31 @@ class _MyHomePageState extends State<MyHomePage> {
     }).toList();
   }
 
-  void addNewTransaction(String txTitle, double txAmount, DateTime chosenDate) {
-    final newTX = Transaction(
-        id: DateTime.now().toString(),
-        title: txTitle,
-        amount: txAmount,
-        date: chosenDate);
+  void _addNewTransaction(
+      String txTitle, double txAmount, DateTime chosenDate) {
+    final newTx = Transaction(
+      title: txTitle,
+      amount: txAmount,
+      date: chosenDate,
+      id: DateTime.now().toString(),
+    );
+
     setState(() {
-      _userTransactions.add(newTX);
+      _userTransactions.add(newTx);
     });
   }
 
-  void _startAddNewTransaction(BuildContext context) {
+  void _startAddNewTransaction(BuildContext ctx) {
     showModalBottomSheet(
-        context: context,
-        builder: (_) {
-          return GestureDetector(
-            onTap: () {
-              NewTransactionState().submitData();
-            },
-            child: NewTransaction(addNewTransaction),
-            behavior: HitTestBehavior.opaque,
-          );
-        });
+      context: ctx,
+      builder: (_) {
+        return GestureDetector(
+          onTap: () {},
+          child: NewTransaction(_addNewTransaction),
+          behavior: HitTestBehavior.opaque,
+        );
+      },
+    );
   }
 
   void _deleteTransaction(String id) {
@@ -77,14 +88,14 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  bool _showChart = false;
-
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
     final isLandscape = mediaQuery.orientation == Orientation.landscape;
     final appBar = AppBar(
-      title: Text(AppStrings.Flutter_App),
+      title: Text(
+        AppStrings.Personal_Expenses,
+      ),
       actions: <Widget>[
         IconButton(
           icon: Icon(Icons.add),
@@ -92,6 +103,22 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ],
     );
+
+    final appBarIOS = CupertinoNavigationBar(
+      middle: Text(
+        AppStrings.Personal_Expenses,
+      ),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          GestureDetector(
+            child: Icon(CupertinoIcons.add),
+            onTap: () => _startAddNewTransaction(context),
+          ),
+        ],
+      ),
+    );
+
     final txListWidget = Container(
       height: (mediaQuery.size.height -
               appBar.preferredSize.height -
@@ -100,26 +127,28 @@ class _MyHomePageState extends State<MyHomePage> {
       child: TransactionList(_userTransactions, _deleteTransaction),
     );
 
-    return Scaffold(
-      bottomSheet: bottomSheet,
-      appBar: appBar,
-      body: SingleChildScrollView(
+    final pageBody = SafeArea(
+      child: SingleChildScrollView(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             if (isLandscape)
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(AppStrings.Show_Chart),
-                  Switch(
-                      value: _showChart,
-                      onChanged: (value) {
-                        setState(() {
-                          _showChart = value;
-                        });
-                      })
+                children: <Widget>[
+                  Text(
+                    AppStrings.Show_Chart,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  Switch.adaptive(
+                    activeColor: Theme.of(context).accentColor,
+                    value: _showChart,
+                    onChanged: (val) {
+                      setState(() {
+                        _showChart = val;
+                      });
+                    },
+                  ),
                 ],
               ),
             if (!isLandscape)
@@ -140,14 +169,28 @@ class _MyHomePageState extends State<MyHomePage> {
                           0.7,
                       child: Chart(_recentTransactions),
                     )
-                  : txListWidget,
+                  : txListWidget
           ],
         ),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: FloatingActionButton(
-          onPressed: () => _startAddNewTransaction(context),
-          child: Icon(Icons.add)),
     );
+
+    return Platform.isIOS
+        ? CupertinoPageScaffold(
+            child: pageBody,
+            navigationBar: appBarIOS,
+          )
+        : Scaffold(
+            appBar: appBar,
+            body: pageBody,
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerFloat,
+            floatingActionButton: Platform.isIOS
+                ? Container()
+                : FloatingActionButton(
+                    child: Icon(Icons.add),
+                    onPressed: () => _startAddNewTransaction(context),
+                  ),
+          );
   }
 }
